@@ -54,9 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
     /* --- Dropdown (mobile) --- */
     document.querySelectorAll('.dropdown > a').forEach(trigger => {
         trigger.addEventListener('click', (e) => {
-            if (window.innerWidth <= 992) {
+            if (window.innerWidth <= 768) {
                 e.preventDefault();
                 const parent = trigger.parentElement;
+                // Close other dropdowns
+                document.querySelectorAll('.dropdown.open').forEach(d => {
+                    if (d !== parent) d.classList.remove('open');
+                });
                 parent.classList.toggle('open');
             }
         });
@@ -225,22 +229,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    /* --- Tilt Effect on Service Cards --- */
-    document.querySelectorAll('.service-card, .feature-card').forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = ((y - centerY) / centerY) * -4;
-            const rotateY = ((x - centerX) / centerX) * 4;
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+    /* --- Tilt Effect on Service Cards (desktop only) --- */
+    if (window.innerWidth > 768) {
+        document.querySelectorAll('.service-card, .feature-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -4;
+                const rotateY = ((x - centerX) / centerX) * 4;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = '';
+            });
         });
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
-        });
-    });
+    }
 
     /* --- Parallax Hero Badge --- */
     const heroBadge = document.querySelector('.hero-badge');
